@@ -52,6 +52,13 @@
     <string name="root_appops_title">Manage root accesses</string>
     <string name="root_appops_summary">View and control the root rules</string>
 
+    <!-- Captive Portal modes -->
+    <string name="captive_portal_mode_title">Captive portal mode</string>
+    <string name="captive_portal_mode_dialog_title">Select captive portal mode</string>
+    <string name="captive_portal_mode_ignore">Ignore captive portals</string>
+    <string name="captive_portal_mode_prompt">Prompt on detection</string>
+    <string name="captive_portal_mode_avoid">Disconnect and avoid network</string>
+
     <!-- Double tap to sleep on status bar or lockscreen -->
     <string name="status_bar_double_tap_to_sleep_title">Tap to sleep</string>
     <string name="status_bar_double_tap_to_sleep_summary">Double-tap on the status bar or lockscreen to turn off the display</string>

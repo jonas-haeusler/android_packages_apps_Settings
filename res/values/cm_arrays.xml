@@ -228,4 +228,16 @@
         <item>0</item>
         <item>2</item>
     </string-array>
+
+    <string-array name="captive_portal_mode_entries" translatable="false">
+        <item>@string/captive_portal_mode_ignore</item>
+        <item>@string/captive_portal_mode_prompt</item>
+        <item>@string/captive_portal_mode_avoid</item>
+    </string-array>
+
+    <string-array name="captive_portal_mode_values" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
 </resources>

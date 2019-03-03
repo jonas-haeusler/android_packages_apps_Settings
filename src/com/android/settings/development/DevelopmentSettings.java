@@ -247,6 +247,8 @@ public class DevelopmentSettings extends RestrictedSettingsFragment
 
     private static final String BACKGROUND_CHECK_KEY = "background_check";
 
+    private static final String CAPTIVE_PORTAL_MODE_KEY = "captive_portal_mode";
+
     private static final String SHOW_ALL_ANRS_KEY = "show_all_anrs";
 
     private static final String SHOW_NOTIFICATION_CHANNEL_WARNINGS_KEY = "show_notification_channel_warnings";
@@ -343,6 +345,8 @@ public class DevelopmentSettings extends RestrictedSettingsFragment
     private ListPreference mTransitionAnimationScale;
     private ListPreference mAnimatorDurationScale;
     private ListPreference mOverlayDisplayDevices;
+
+    private ListPreference mCaptivePortalMode;
 
     private WebViewAppPreferenceController mWebViewAppPrefController;
 
@@ -557,6 +561,9 @@ public class DevelopmentSettings extends RestrictedSettingsFragment
         mSimulateColorSpace = addListPreference(SIMULATE_COLOR_SPACE);
         mUSBAudio = findAndInitSwitchPref(USB_AUDIO_KEY);
         mForceResizable = findAndInitSwitchPref(FORCE_RESIZABLE_KEY);
+
+        mCaptivePortalMode = addListPreference(CAPTIVE_PORTAL_MODE_KEY);
+        mCaptivePortalMode.setOnPreferenceChangeListener(this);
 
         if (ActivityManager.isLowRamDeviceStatic()) {
             disableForUser(mForceResizable);
@@ -888,6 +895,7 @@ public class DevelopmentSettings extends RestrictedSettingsFragment
         updateDebugHwOverdrawOptions();
         updateDebugHwRendererOptions();
         updateDebugLayoutOptions();
+        updateCaptivePortalModeOptions();
         updateAnimationScaleOptions();
         updateOverlayDisplayDevicesOptions();
         updateImmediatelyDestroyActivitiesOptions();
@@ -968,6 +976,7 @@ public class DevelopmentSettings extends RestrictedSettingsFragment
         }
         mBugReportInPowerController.resetPreference();
         mEnableAdbController.resetPreference();
+        resetCaptivePortalMode();
         resetDebuggerOptions();
         resetAdbNotifyOptions();
         resetRootAccessOptions();
@@ -986,6 +995,12 @@ public class DevelopmentSettings extends RestrictedSettingsFragment
         updateAllOptions();
         mDontPokeProperties = false;
         pokeSystemProperties();
+    }
+
+    private void resetCaptivePortalMode() {
+        Settings.Global.putInt(getActivity().getContentResolver(),
+                Settings.Global.CAPTIVE_PORTAL_MODE, Settings.Global.CAPTIVE_PORTAL_MODE_PROMPT);
+        updateCaptivePortalModeOptions();
     }
 
     private void resetAdbNotifyOptions() {
@@ -2458,6 +2473,20 @@ public class DevelopmentSettings extends RestrictedSettingsFragment
         updateOverlayDisplayDevicesOptions();
     }
 
+    private void updateCaptivePortalModeOptions() {
+        int value = Settings.Global.getInt(getActivity().getContentResolver(),
+                Settings.Global.CAPTIVE_PORTAL_MODE, Settings.Global.CAPTIVE_PORTAL_MODE_PROMPT);
+
+        mCaptivePortalMode.setValueIndex(value);
+        mCaptivePortalMode.setSummary(mCaptivePortalMode.getEntries()[value]);
+    }
+
+    private void writeCaptivePortalModeOptions(Object newValue) {
+        Settings.Global.putInt(getActivity().getContentResolver(),
+                Settings.Global.CAPTIVE_PORTAL_MODE, Integer.parseInt((String) newValue));
+        updateCaptivePortalModeOptions();
+    }
+
     private void updateAppProcessLimitOptions() {
         try {
             int limit = ActivityManager.getService().getProcessLimit();
@@ -2808,6 +2837,9 @@ public class DevelopmentSettings extends RestrictedSettingsFragment
             return true;
         } else if (preference == mOverlayDisplayDevices) {
             writeOverlayDisplayDevicesOptions(newValue);
+            return true;
+        } else if (preference == mCaptivePortalMode) {
+            writeCaptivePortalModeOptions(newValue);
             return true;
         } else if (preference == mTrackFrameTime) {
             writeTrackFrameTimeOptions(newValue);
